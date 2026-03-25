@@ -88,7 +88,7 @@ class TodayApp(App):
         if worker.is_cancelled:
             return
 
-        jira_tickets = g.get_jira_tickets(commits)
+        jira_tickets = g.get_jira_tickets(commits) if self.jira_url else {}
 
         if worker.is_cancelled:
             return
@@ -113,9 +113,10 @@ class TodayApp(App):
                 commit.id,
                 author_cell,
                 extract_pr_number(commit.message),
-                jira_tickets.get(extract_pr_number(commit.message) or -1),
-                merged_cell,
             ]
+            if self.jira_url:
+                row.append(jira_tickets.get(extract_pr_number(commit.message) or -1))
+            row.append(merged_cell)
             # Spinner placeholder for each workflow column
             for _wf_file in self.action_names:
                 row.append(Text(_SPINNER_FRAMES[0], style="dim"))
@@ -175,7 +176,8 @@ class TodayApp(App):
         self._col_keys["sha"] = table.add_column("SHA", width=12)
         self._col_keys["author"] = table.add_column("Author", width=20)
         self._col_keys["pr"] = table.add_column("PR #", width=8)
-        self._col_keys["jira"] = table.add_column("Jira ID", width=10)
+        if self.jira_url:
+            self._col_keys["jira"] = table.add_column("Jira ID", width=10)
         self._col_keys["merged"] = table.add_column("Committed", width=18)
 
         for wf_file in self.action_names:
