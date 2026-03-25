@@ -48,6 +48,7 @@ class CommitInfo:
     author_name: str
     message: str
     author_login: str | None = None
+    committed_at: datetime | None = None
     workflow_statuses: dict[str, WorkflowStatus] = field(default_factory=dict)
 
 
@@ -89,6 +90,7 @@ class GitClient:
                         nodes {{
                           oid
                           message
+                          committedDate
                           author {{ name user {{ login }} }}
                         }}
                         pageInfo {{ hasNextPage endCursor }}
@@ -113,12 +115,19 @@ class GitClient:
             for node in history["nodes"]:
                 author = node["author"]
                 user = author.get("user") or {}
+                committed_date_str = node.get("committedDate")
+                committed_at = (
+                    datetime.fromisoformat(committed_date_str)
+                    if committed_date_str
+                    else None
+                )
                 commits.append(
                     CommitInfo(
                         id=node["oid"],
                         author_name=author["name"],
                         author_login=user.get("login"),
                         message=node["message"],
+                        committed_at=committed_at,
                     )
                 )
 
