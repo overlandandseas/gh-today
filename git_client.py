@@ -53,10 +53,17 @@ class CommitInfo:
 
 
 class GitClient:
-    def __init__(self, target_date: date, repo: str, branch: str = "main") -> None:
+    def __init__(
+        self,
+        target_date: date,
+        repo: str,
+        branch: str = "main",
+        jira_projects: list[str] | None = None,
+    ) -> None:
         self.repo = repo
         self.owner, self.name = repo.split("/")
         self.branch = branch
+        self.jira_projects = jira_projects or []
         self.since = datetime.combine(
             target_date, datetime.min.time(), tzinfo=timezone.utc
         ).isoformat()
@@ -311,7 +318,9 @@ class GitClient:
 
             branch_name = pr_info.get("headRefName", "")
             body = pr_info.get("body", "") or ""
-            results[pr_number] = extract_jira_ticket(branch_name, commit_message, body)
+            results[pr_number] = extract_jira_ticket(
+                branch_name, commit_message, body, projects=self.jira_projects
+            )
 
         return results
 

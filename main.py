@@ -25,6 +25,7 @@ def main():
         target_date=target_date,
         action_names=config.action_names,
         jira_url=config.jira_url,
+        jira_projects=config.jira_projects,
         repo=config.repo,
         branch=config.branch,
     )

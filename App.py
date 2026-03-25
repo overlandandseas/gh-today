@@ -26,6 +26,7 @@ class TodayApp(App):
         target_date: date | None = None,
         action_names: list[str] | None = None,
         jira_url: str | None = None,
+        jira_projects: list[str] | None = None,
         repo: str = "",
         branch: str = "main",
     ) -> None:
@@ -33,6 +34,7 @@ class TodayApp(App):
         self.target_date = target_date or date.today()
         self.action_names = action_names or []
         self.jira_url = (jira_url or "").rstrip("/")
+        self.jira_projects = jira_projects or []
         self.repo = repo
         self.branch = branch
         self._row_keys: list[RowKey] = []
@@ -63,7 +65,12 @@ class TodayApp(App):
         """Fetch all data in a background thread."""
         worker = get_current_worker()
 
-        g = GitClient(target_date=self.target_date, repo=self.repo, branch=self.branch)
+        g = GitClient(
+            target_date=self.target_date,
+            repo=self.repo,
+            branch=self.branch,
+            jira_projects=self.jira_projects,
+        )
 
         # Phase 1: fetch commits + workflow names + JIRA tickets, then show table
         commits = g.get_commits()

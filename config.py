@@ -26,12 +26,14 @@ class RepoConfig:
     branch: str = "main"
     action_names: list[str] = field(default_factory=list)
     jira_url: str = ""
+    jira_projects: list[str] = field(default_factory=list)
 
 
 _HARDCODED_DEFAULTS = {
     "branch": "main",
     "action_names": [],
     "jira_url": "",
+    "jira_projects": [],
 }
 
 
@@ -134,9 +136,16 @@ def load_config(repo: str) -> RepoConfig:
         or _HARDCODED_DEFAULTS["jira_url"]
     )
 
+    jira_projects = repo_section.get("jira_projects")
+    if jira_projects is None:
+        jira_projects = defaults_section.get("jira_projects")
+    if jira_projects is None:
+        jira_projects = _HARDCODED_DEFAULTS["jira_projects"]
+
     return RepoConfig(
         repo=repo,
         branch=branch,
         action_names=list(action_names),
         jira_url=jira_url,
+        jira_projects=[p.upper() for p in jira_projects],
     )
