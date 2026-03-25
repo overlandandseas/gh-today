@@ -1,5 +1,7 @@
 # gh-today
 
+<img width="1131" height="692" alt="gh today" src="https://github.com/user-attachments/assets/805542d5-3251-4c0a-84dc-2ded6957127a" />
+
 A terminal dashboard that shows today's commits on any GitHub repo, with PR links, JIRA tickets, and GitHub Actions workflow statuses.
 
 `cd` into any git repo, run `gh today`, and see what happened today.
