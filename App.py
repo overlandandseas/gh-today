@@ -151,20 +151,17 @@ class TodayApp(App):
         if wf is None:
             return Text("—", style="dim")
 
-        style = wf.status.value
+        status = wf.status
         run_str = f"#{wf.run_number} " if wf.run_number else ""
 
-        if wf.status == JobStatus.NOT_YET_STARTED:
-            return Text(f"{run_str}pending", style=style)
-
-        if wf.status == JobStatus.SKIPPED:
-            return Text(f"{run_str}skipped", style=style)
+        if status in (JobStatus.NOT_YET_STARTED, JobStatus.SKIPPED):
+            return Text(f"{status.icon} {run_str}{status.label}", style=status.color)
 
         time_ago = ""
         if wf.updated_at:
             time_ago = humanize.naturaltime(datetime.now(timezone.utc) - wf.updated_at)
 
-        return Text(f"{run_str}{time_ago}", style=style)
+        return Text(f"{status.icon} {run_str}{time_ago}", style=status.color)
 
     def _populate_table(
         self, rows: list[tuple], workflow_names: dict[str, str]

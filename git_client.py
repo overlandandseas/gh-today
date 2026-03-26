@@ -11,12 +11,24 @@ GRAPHQL_PR_BATCH_SIZE = 50
 
 
 class JobStatus(Enum):
-    NOT_YET_STARTED = "dim"
-    SKIPPED = "dim"
-    IN_PROGRESS = "white"
-    COMPLETED = "green"
-    CANCELLED = "yellow"
-    FAILURE = "red"
+    NOT_YET_STARTED = ("dim", "○", "queued")
+    SKIPPED = ("dim", "⊘", "skipped")
+    IN_PROGRESS = ("white", "●", "in progress")
+    COMPLETED = ("green", "✓", "success")
+    CANCELLED = ("dim", "⊘", "cancelled")
+    FAILURE = ("red", "✗", "failure")
+
+    @property
+    def color(self) -> str:
+        return self.value[0]
+
+    @property
+    def icon(self) -> str:
+        return self.value[1]
+
+    @property
+    def label(self) -> str:
+        return self.value[2]
 
     @property
     def priority(self) -> int:
