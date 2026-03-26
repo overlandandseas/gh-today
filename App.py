@@ -16,7 +16,6 @@ _SPINNER_FRAMES = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 
 
 class TodayApp(App):
-    theme = "tokyo-night"
     TITLE = "Today"
 
     BINDINGS = [("q", "quit", "Quit")]
@@ -31,6 +30,7 @@ class TodayApp(App):
         branch: str = "main",
     ) -> None:
         super().__init__()
+        self.theme = "tokyo-night"
         self.target_date = target_date or date.today()
         self.action_names = action_names or []
         self.jira_url = (jira_url or "").rstrip("/")
